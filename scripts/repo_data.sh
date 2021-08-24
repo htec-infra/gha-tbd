@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set_var() {
     KEY="${1}"
