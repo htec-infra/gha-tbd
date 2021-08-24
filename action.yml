@@ -1,0 +1,15 @@
+name: 'Trunk-based Development Processor'
+description: 'Multipurpose GitHub Action'
+inputs:
+  operation:
+    description: 'What to do?'
+    required: true
+    default: 'help'
+outputs:
+  time: # id of output
+    description: 'Execution time'
+runs:
+  using: 'docker'
+  image: 'Dockerfile'
+  args:
+    - ${{ inputs.operation }}
