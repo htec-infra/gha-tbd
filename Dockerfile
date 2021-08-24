@@ -1,10 +1,10 @@
 # Container image that runs your code
 FROM alpine:3.14
 
-ADD entrypoint.sh /entrypoint.sh
-
 WORKDIR /app
+
+ADD entrypoint.sh .
 
 COPY scripts/ .
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
