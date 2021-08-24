@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 OP="${1}"
 
 if [[  "${OP}" == "get_version" ]]; then
