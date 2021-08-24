@@ -1,14 +1,10 @@
 # Container image that runs your code
-FROM alpine:3.10
+FROM alpine:3.14
+
+ADD entrypoint.sh /entrypoint.sh
 
 WORKDIR /app
 
-COPY entrypoint.sh /entrypoint.sh
-
 COPY scripts/ .
 
-RUN chmod +x /app/*.sh
-RUN chmod +x /entrypoint.sh
-
-# Code file to execute when the docker container starts up (`entrypoint.sh`)
 ENTRYPOINT ["/entrypoint.sh"]
