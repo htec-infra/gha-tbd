@@ -9,11 +9,18 @@ set_var() {
 }
 
 resolve_app_version() {
+    # If HEAD_REF is not NULL and Base branch doesn't contain 'pull' - then it's production
     if [[ -n "${GITHUB_HEAD_REF}" ]]; then
-      set_var APP_RELEASE_TYPE "Production"
-      set_var APP_VERSION "${GITHUB_HEAD_REF##release/}"
+        if [[ -z "${GITHUB_REF}##main" ]]; || [[ -z "${GITHUB_REF}##master" ]]; then
+            set_var APP_RELEASE_TYPE "Production"
+            set_var APP_VERSION "${GITHUB_HEAD_REF##release/}"
+        fi
+        if [[ -z "${GITHUB_REF}##*pull*" ]]; then
+            set_var APP_RELEASE_TYPE "Beta (Pre-release)"
+            set_var APP_VERSION "${GITHUB_HEAD_REF##release/}-rc+${GITHUB_RUN_NUMBER}"   
+        fi        
     else
-      if [[ -z "${GITHUB_REF##*main}" ]]; then
+      if [[ -z "${GITHUB_REF##*main}" ]] || [[ -z "${GITHUB_REF##*master}" ]]; then
         set_var APP_RELEASE_TYPE "Alpha (Debug)"
         set_var APP_VERSION "alpha-${GITHUB_SHA::7}"
       fi
