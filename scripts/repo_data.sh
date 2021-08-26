@@ -1,9 +1,10 @@
-#!/bin/sh
+#!/bin/bash
 
 set_var() {
     KEY="${1}"
     VAL="${2}"
     export "${KEY}=${VAL}"
+    # shellcheck disable=SC2086
     echo "${KEY}=${VAL}" >> $GITHUB_ENV
     echo "::set-output name=${KEY}::${VAL}"
 }
@@ -47,6 +48,23 @@ report() {
     echo "Head Branch ref: ${GITHUB_HEAD_REF:-None}"
     echo "Release type: ${APP_RELEASE_TYPE}"
     echo "App Version: ${APP_VERSION}"
+    echo "Docker Repo: ${DOCKER_REPO}"
+    echo ""
+    echo "######"
+}
+
+generate_repo_summary() {
+  SUMMARY=$(cat <<END
+Released version: ${APP_VERSION}
+
+<details>
+<summary>Repo spec:</summary>
+<br>
+Image: ${DOCKER_REPO}:${APP_VERSION}
+</details>
+END
+)
+  set_var "REPO_SUMMARY" "$SUMMARY"
 }
 
 
@@ -54,6 +72,8 @@ APP_CONFIG_FILE="${GITHUB_WORKSPACE}/infra/app.conf"
 if [[ -f "${APP_CONFIG_FILE}" ]]; then
     echo "Application Config detected! Loading parameters..."
     source "${APP_CONFIG_FILE}"
+else
+    echo "Application Config not found here: ${APP_CONFIG_FILE}"
 fi
 
 APP_REPO="${GITHUB_REPOSITORY}"
@@ -63,3 +83,9 @@ resolve_app_version
 
 # Run report
 report
+
+generate_repo_summary
+
+
+
+env
