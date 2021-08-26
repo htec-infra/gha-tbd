@@ -3,6 +3,12 @@
 set_var() {
     KEY="${1}"
     VAL="${2}"
+
+    # https://trstringer.com/github-actions-multiline-strings/
+    VAL="${VAL//'%'/'%25'}"
+    VAL="${VAL//$'\n'/'%0A'}"
+    VAL="${VAL//$'\r'/'%0D'}"
+
     export "${KEY}=${VAL}"
     # shellcheck disable=SC2086
     echo "${KEY}=${VAL}" >> $GITHUB_ENV
