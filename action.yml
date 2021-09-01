@@ -5,6 +5,10 @@ inputs:
     description: 'What to do?'
     required: true
     default: 'help'
+  parameters:
+    description: 'Operation parameters'
+    required: false
+    default: ''
 outputs:
   time: # id of output
     description: 'Execution time'
@@ -13,3 +17,4 @@ runs:
   image: 'Dockerfile'
   args:
     - ${{ inputs.operation }}
+    - ${{ inputs.parameters }}
