@@ -84,7 +84,7 @@ create_release_branch() {
     echo "NEW_VERSION: ${NEW_VERSION}"
     echo "CHECKOUT_SHA: ${CHECKOUT_SHA}"
   else
-    git checkout -b "${RELEASE_BRANCH}" "${CHECKOUT_SHA}"
+    git switch -f -c "${RELEASE_BRANCH}" "${CHECKOUT_SHA}"
     git push --set-upstream origin "${RELEASE_BRANCH}"
   fi
 }
