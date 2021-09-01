@@ -7,6 +7,6 @@ ADD entrypoint.sh .
 
 COPY scripts/ .
 
-RUN apk update && apk upgrade && apk add bash
+RUN apk update && apk upgrade && apk add bash && apk add git
 
 ENTRYPOINT ["/bin/sh", "/app/entrypoint.sh"]
