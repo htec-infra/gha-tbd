@@ -6,8 +6,6 @@ set -o nounset
 ########
 # Variable
 ####
-GIT_USER_NAME=github-action-bot
-GIT_USER_EMAIL=gha-bot@htecgroup.com
 
 RELEASE_TYPE="${1}"
 
@@ -18,6 +16,11 @@ LATEST_TAG_SHA=$(git rev-list -n 1 "$PREVIOUS_RELEASE_TAG" || exit 69)
 #######
 # Functions
 ####
+
+#init_git() {
+#  git config --local user.email "${GIT_USER_EMAIL}"
+#  git config --local user.name "${GIT_USER_NAME}"
+#}
 
 #
 # increment_version "${latest_release_tag}" "${release_type}
@@ -63,11 +66,6 @@ release_branch_exists() {
   if git branch -r | grep -q 'release/'; then echo "true"; else echo "false"; fi
 }
 
-init_git() {
-  git config --local user.email "${GIT_USER_EMAIL}"
-  git config --local user.name "${GIT_USER_NAME}"
-}
-
 # shellcheck disable=SC2155
 create_release_branch() {
   if [[ "$(release_branch_exists)" == "true" ]]; then
@@ -84,7 +82,7 @@ create_release_branch() {
     echo "NEW_VERSION: ${NEW_VERSION}"
     echo "CHECKOUT_SHA: ${CHECKOUT_SHA}"
   else
-    git checkout -B "${RELEASE_BRANCH}" "${CHECKOUT_SHA}"
+    git switch -c "${RELEASE_BRANCH}" "${CHECKOUT_SHA}"
     git push --set-upstream origin "${RELEASE_BRANCH}"
   fi
 }
@@ -97,11 +95,6 @@ if [ "$LATEST_HEAD_SHA" == "$LATEST_TAG_SHA" ]; then
   echo "Nothing to do"
   exit 0
 fi
-
-# If version string is missing or has the wrong number of members, show usage message.
-
-# First initialize Git client
-init_git
 
 # Create release branch based on the last release tag and submitted release type
 create_release_branch "$PREVIOUS_RELEASE_TAG" "$RELEASE_TYPE"
