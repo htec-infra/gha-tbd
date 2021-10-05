@@ -25,7 +25,7 @@ resolve_app_version() {
         fi
         if [[ -z "${GITHUB_REF##*/pull/*}" ]]; then
             set_var APP_RELEASE_TYPE "Beta (Pre-release)"
-            set_var APP_VERSION "${GITHUB_HEAD_REF##release/}-rc+${GITHUB_RUN_NUMBER}"   
+            set_var APP_VERSION "${GITHUB_HEAD_REF##release/}-rc.${GITHUB_RUN_NUMBER}"
         fi        
     else
       if [[ -z "${GITHUB_REF##*main}" ]] || [[ -z "${GITHUB_REF##*master}" ]]; then
@@ -34,7 +34,7 @@ resolve_app_version() {
       fi
       if [[ -z "${GITHUB_REF##*/release/*}" ]]; then
         set_var APP_RELEASE_TYPE "Beta (Pre-release)"
-        set_var APP_VERSION "${GITHUB_REF##refs/heads/release/}-rc+${GITHUB_RUN_NUMBER}"                        
+        set_var APP_VERSION "${GITHUB_REF##refs/heads/release/}-rc.${GITHUB_RUN_NUMBER}"
       fi
       if [[ -z "${GITHUB_REF##*/tags/*}" ]]; then
         set_var APP_RELEASE_TYPE "Production"
