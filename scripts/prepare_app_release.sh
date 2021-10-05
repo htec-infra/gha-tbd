@@ -10,8 +10,8 @@ set -o nounset
 RELEASE_TYPE="${1}"
 
 LATEST_HEAD_SHA=$(git rev-parse HEAD)
-PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match="*.*.*" --tags || echo "0.0.1")
-LATEST_TAG_SHA=$(git rev-list -n 1 "$PREVIOUS_RELEASE_TAG" || exit 69)
+PREVIOUS_RELEASE_TAG=$(git describe --abbrev=0 --match="*.*.*" --tags || echo "0.0.0")
+LATEST_TAG_SHA=$(git rev-list -n 1 "$PREVIOUS_RELEASE_TAG" || $LATEST_HEAD_SHA)
 
 #######
 # Functions
