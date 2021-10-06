@@ -30,3 +30,8 @@ if [[ "${OP}" == "prepare_release" ]]; then
 
   exit 0
 fi
+
+if [[ "${OP}" == "docker_ops" ]]; then
+    echo ">>> Running Docker operation with following parameters # '${2}'"
+    /bin/bash /app/docker_ops.sh ${PARAMS}
+fi
