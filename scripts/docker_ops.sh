@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+#
+# login <no_parameter>
+#
 login() {
   if [[ ${DOCKER_REPO} == *dkr.ecr* ]]; then
     local REPO_DOMAIN=null REGION=us-east-1
@@ -25,9 +28,19 @@ build() {
 #
 # push <no-parameters>
 #
-
 push() {
   docker push "${DOCKER_IMG_TAG}"
+}
+
+#
+# cleanup
+#
+cleanup() {
+  if [[ ${DOCKER_REPO} == *dkr.ecr* ]]; then
+    local REPO_DOMAIN=null
+    REPO_DOMAIN="$(echo "$DOCKER_REPO" | cut -d "/" -f 1)"
+    docker logout "$REPO_DOMAIN"
+  fi
 }
 
 #
@@ -82,5 +95,8 @@ if [[ "${2}" == "true" ]]; then
 else
   echo "(push = ${2}) Docker push disabled by user, image will not pushed to the Registry"
 fi
+
+# finally, cleanup
+run_cmd cleanup
 
 # >>>>>>>  End
