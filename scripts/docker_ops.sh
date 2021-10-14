@@ -5,7 +5,7 @@ login() {
   if [[ ${DOCKER_REPO} == *dkr.ecr* ]]; then
     local REPO_DOMAIN=null REGION=us-east-1
     REPO_DOMAIN="$(echo "$DOCKER_REPO" | cut -d "/" -f 1)"
-    REGION="$(curl -s http://169.254.169.254/latest/meta-data/placement/region)"
+    REGION="$(echo "$DOCKER_REPO" | cut -d "." -f 4)"
     # Run docker login in pipe
     aws ecr get-login-password --region "${REGION}" | docker login --username AWS --password-stdin "${REPO_DOMAIN}"
   fi
