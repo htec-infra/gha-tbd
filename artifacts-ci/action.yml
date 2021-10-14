@@ -1,0 +1,37 @@
+name: 'Artifact CI'
+description: 'Verify / Build / Test / Publish Docker image for applications packaged as docker artifact'
+inputs:
+  token:
+    description: 'Github access token'
+    required: true
+  dockerfile:
+    description: 'Dockerfile location'
+    required: true
+    default: 'infra/Dockerfile'
+  push_image:
+    description: 'Whether to push image to Docker Registry or not?'
+    required: true
+    default: 'true'
+outputs:
+  app_version:
+    description: "Application Version"
+    value: ${{ steps.repo_data.outputs.APP_VERSION }}
+runs:
+  using: "composite"
+  steps:
+    - id: repo_data
+      shell: bash
+      run: ${{ github.action_path }}/../scripts/repo_data.sh
+    - shell: bash
+      run: |
+        echo "::group::Docker Operations"
+          ${{ github.action_path }}/../scripts/docker_ops.sh "${{ inputs.dockerfile }}" "${{ inputs.push_image }}"
+        echo "::endgroup::"
+    - name: Comment PR
+      uses: actions/github-script@v5
+      with:
+        github-token: ${{ inputs.token }}
+        script: |
+          const { GITHUB_ACTION_PATH } = process.env
+          const script = require(`${GITHUB_ACTION_PATH}/../scripts/comment_pr.js`)
+          await script({github, context})

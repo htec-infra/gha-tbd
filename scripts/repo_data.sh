@@ -77,6 +77,7 @@ END
 APP_CONFIG_FILE="${GITHUB_WORKSPACE}/infra/app.conf"
 if [[ -f "${APP_CONFIG_FILE}" ]]; then
     echo "Application Config detected! Loading parameters..."
+    # shellcheck source=${GITHUB_WORKSPACE}/infra/app.conf
     source "${APP_CONFIG_FILE}"
 else
     echo "Application Config not found here: ${APP_CONFIG_FILE}"

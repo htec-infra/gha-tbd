@@ -1,0 +1,25 @@
+name: Initialize App Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type: ( major | minor | patch )'
+        required: true
+        default: 'patch'
+jobs:
+  run:
+    name: Initialization
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          # Use PAT token with workflow permissions enabled
+          token: ${{ secrets.CI_PAT }}
+      - name: Prepare App for Release
+        id: artifact
+        uses: htec-infra/gha-tbd/init-release@main
+        with:
+          release_type: ${{ github.event.inputs.release_type }}

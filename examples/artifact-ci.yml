@@ -1,0 +1,50 @@
+name: Artifacts CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main/master branch
+  push:
+    branches: [ main, master ]
+    paths:
+      - src/**
+      - infra/**
+  pull_request:
+    types: [ opened, synchronize, closed ]
+    branches: [ main, master ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# Global ENVs
+env:
+  APP_REVISION: ${{ github.event.pull_request.head.sha || github.sha }}
+jobs:
+  build_and_publish:
+    name: "Publish Docker Artifact"
+    if: ${{ contains(github.head_ref, 'release/') || contains(fromJson('["push", "workflow_dispatch"]'), github.event_name) }}
+    runs-on: ubuntu-latest
+    outputs:
+      app_version: ${{ steps.artifact.outputs.app_version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ env.APP_REVISION }}
+      - name: Create Artifact
+        id: artifact
+        uses: htec-infra/gha-tbd/artifacts-ci@main
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          dockerfile: infra/Test.Dockerfile
+          push_image: false
+
+  auto_deploy:
+    name: Auto Deploy
+    needs: build_and_publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run auto-deploy
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.CI_PAT }}
+          event-type: app_deploy
+          client-payload: '{"env": "dev", "version": "${{ needs.build_and_publish.outputs.app_version }}"}'
+   
