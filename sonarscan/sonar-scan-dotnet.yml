@@ -1,0 +1,54 @@
+name: Sonar scan
+
+on:
+  workflow_call:
+    inputs:
+      DOTNET_VERSION:
+        required: true
+        type: string
+        default: '6.0.x'
+      JAVA_VERSION:
+        required: true
+        type: string
+        default: '11'
+      PROJECT_NAME:
+        required: true
+        type: string 
+      ORG_NAME:
+        required: true
+        type: string
+      BUILD_DIR:
+        required: true
+        type: string
+    secrets:
+      SONAR_TOKEN:
+        required: true
+      GITHUB_TOKEN:
+        required: true
+jobs:
+
+  sonarcloud:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ inputs.DOTNET_VERSION }}
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '${{ inputs.JAVA_VERSION }}'
+      - name: Install Sonar global tool
+        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Begin Sonar scan
+        run: dotnet sonarscanner begin /k:"${{ inputs.PROJECT_NAME }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.ORG_NAME }}
+      - name: Build and run unit tests
+        run: dotnet build ${{ inputs.BUILD_DIR }}
+      - name: End Sonar scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
