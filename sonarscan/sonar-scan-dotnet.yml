@@ -45,7 +45,7 @@ jobs:
       - name: Install Sonar global tool
         run: dotnet tool install --global dotnet-sonarscanner
       - name: Begin Sonar scan
-        run: dotnet sonarscanner begin /k:"${{ inputs.PROJECT_NAME }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.ORG_NAME }}
+        run: dotnet sonarscanner begin /k:"${{ inputs.ORG_NAME }}_${{ inputs.PROJECT_NAME }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.ORG_NAME }}
       - name: Build and run unit tests
         run: dotnet build ${{ inputs.BUILD_DIR }}
       - name: End Sonar scan
