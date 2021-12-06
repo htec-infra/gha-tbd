@@ -1,0 +1,19 @@
+name: Get organization name
+
+on:
+  workflow_call:
+    # Map the workflow outputs to job outputs
+    outputs:
+      ORG_NAME:
+        value: ${{ jobs.get_org_name.outputs.ORG_NAME }}
+  
+jobs:
+  get_org_name:
+    name: Generate output
+    runs-on: ubuntu-latest   
+    # Map the job outputs to step outputs
+    outputs:
+      ORG_NAME: ${{ steps.parse_org_name.outputs.ORG_NAME }}
+    steps:
+      - id: parse_org_name
+        run: echo "::set-output name=ORG_NAME::$(echo ${GITHUB_REPOSITORY} | cut -d '/' -f1)"
