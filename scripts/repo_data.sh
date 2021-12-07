@@ -49,6 +49,8 @@ report() {
     echo "######"
     echo ""
     echo "Repository: ${APP_REPO}"
+    echo "Repository name: ${APP_REPO_NAME}"
+    echo "Organization name: ${APP_REPO_ORG}"
     echo "Revision: ${APP_REVISION}"
     echo "Branch ref: ${GITHUB_REF}"
     echo "Head Branch ref: ${GITHUB_HEAD_REF:-None}"
@@ -84,6 +86,9 @@ else
 fi
 
 APP_REPO="${GITHUB_REPOSITORY}"
+APP_REPO_ORG="echo ${APP_REPO} | cut -d '/' -f1"
+APP_REPO_NAME="echo ${APP_REPO} | cut -d '/' -f2"
+
 
 # Resolve App version based on branch and tags parameters
 resolve_app_version
