@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       release_type:
-        description: 'Release type: ( major | minor | patch )'
-        required: true
-        default: 'patch'
+        type: choice
+        description: Release Type
+        options: [ patch, minor, major ]        
 jobs:
   run:
     name: Initialization
