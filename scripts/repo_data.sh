@@ -86,8 +86,11 @@ else
 fi
 
 APP_REPO="${GITHUB_REPOSITORY}"
-APP_REPO_ORG=$(echo "${APP_REPO}" | cut -d '/' -f1)
-APP_REPO_NAME=$(echo "${APP_REPO}"| cut -d '/' -f2)
+
+# Resolve repository name and organization name from env variable
+set_var "APP_REPO_ORG" "$(echo "${APP_REPO}" | cut -d '/' -f1)"
+set_var "APP_REPO_NAME" "$(echo "${APP_REPO}"| cut -d '/' -f2)"
+
 
 
 # Resolve App version based on branch and tags parameters

@@ -3,19 +3,19 @@ name: Sonar scan
 on:
   workflow_call:
     inputs:
-      DOTNET_VERSION:
+      dotnet_version:
         type: string
         default: '6.0.x'
-      JAVA_VERSION:
+      java_version:
         type: string
         default: '11'
-      BUILD_DIR:
+      build_dir:
         type: string
-        default: ${GITHUB_WORKSPACE}
-      REPO_NAME:
+        default: "./"
+      repo_name:
         required: true
         type: string 
-      ORG_NAME:
+      org_name:
         required: true
         type: string
     secrets:
@@ -32,22 +32,24 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          token:  ${{ secrets.GITHUB_TOKEN }}
+      - name: Get repo data
+        id: repo_data
+        uses: htec-infra/gha-tbd@v0.6.0
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:
-          dotnet-version: ${{ inputs.DOTNET_VERSION }}
+          dotnet-version: ${{ inputs.dotnet_version }}
       - uses: actions/setup-java@v2
         with:
           distribution: 'adopt'
-          java-version: '${{ inputs.JAVA_VERSION }}'
+          java-version: '${{ inputs.java_version }}'
       - name: Install Sonar global tool
         run: dotnet tool install --global dotnet-sonarscanner
       - name: Begin Sonar scan
-        run: dotnet sonarscanner begin /k:"${{ inputs.ORG_NAME }}_${{ inputs.REPO_NAME }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.ORG_NAME }}
+        run: dotnet sonarscanner begin /k:"${{ inputs.org_name || steps.repo_data.outputs.org_name }}_${{ inputs.repo_name || steps.repo_data.outputs.repo_name }}" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.org_name || steps.repo_data.outputs.org_name }}
       - name: Build and run unit tests
-        run: dotnet build "${{ inputs.BUILD_DIR }}"
+        run: dotnet build "${{ inputs.build_dir }}"
       - name: End Sonar scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

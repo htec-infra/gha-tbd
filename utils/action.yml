@@ -1,0 +1,18 @@
+name: 'Repository data'
+description: 'Fetch repository and organization name'
+
+outputs:
+  repo_name:
+    description: "Repository name"
+    value: ${{ steps.repo_data.outputs.APP_REPO_NAME }}
+  org_name:
+    description: "Organization name"
+    value: ${{ steps.repo_data.outputs.APP_REPO_ORG }}
+
+
+runs:
+  using: "composite"
+  steps:
+    - id: repo_data
+      shell: bash
+      run: ${{ github.action_path }}/../scripts/repo_data.sh
