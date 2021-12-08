@@ -1,0 +1,56 @@
+name: Sonar scan
+
+on:
+  workflow_call:
+    inputs:
+      dotnet_version:
+        type: string
+        default: '6.0.x'
+      java_version:
+        type: string
+        default: '11'
+      build_dir:
+        type: string
+        default: "./"
+      repo_name:
+        required: true
+        type: string 
+      org_name:
+        required: true
+        type: string
+    secrets:
+      sonar_token:
+        required: true
+      github_token:
+        required: true
+jobs:
+
+  sonarcloud:
+    name: Code Quality Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          token:  ${{ secrets.github_token }}
+      - name: Get repo data
+        id: repo_data
+        uses: htec-infra/gha-tbd/utils/repo-data@v0.6.0
+      - name: Setup dotnet
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ inputs.dotnet_version }}
+      - uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'
+          java-version: '${{ inputs.java_version }}'
+      - name: Install Sonar global tool
+        run: dotnet tool install --global dotnet-sonarscanner
+      - name: Begin Sonar scan
+        run: dotnet sonarscanner begin /k:"${{ inputs.org_name || steps.repo_data.outputs.org_name }}_${{ inputs.repo_name || steps.repo_data.outputs.repo_name }}" /d:sonar.login=${{ secrets.sonar_token }} /d:sonar.host.url=https://sonarcloud.io /o:${{ inputs.org_name || steps.repo_data.outputs.org_name }}
+      - name: Build and run unit tests
+        run: dotnet build "${{ inputs.build_dir }}"
+      - name: End Sonar scan
+        env:
+          GITHUB_TOKEN: ${{ secrets.github_token }}
+        run: dotnet sonarscanner end /d:sonar.login=${{ secrets.sonar_token }}
