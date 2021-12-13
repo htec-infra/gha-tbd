@@ -26,7 +26,7 @@ on:
 
 jobs:
   build_push:
-    name: 'Verify / Build / Test / Publish Docker image for applications packaged as docker artifact'
+    name: 'Build, publish and verify'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -35,16 +35,16 @@ jobs:
           token:  ${{ inputs.github_token }}
       - name: Get repo data
         id: repo_data
-        uses: htec-infra/gha-utils/utils/repo-data@v0.1.0
+        uses: htec-infra/gha-utils/actions/repo-data@v0.1.0
       - name: Build and push container image
         id: container_ops
-        uses: htec-infra/gha-utils/utils/container-ops@v0.1.0
+        uses: htec-infra/gha-utils/actions/container-ops@v0.1.0
         with:
           dockerfile: "${{ inputs.dockerfile }}"
           push_image: "${{ inputs.push_image }}"
           registry_login: "${{ inputs.registry_login }}"
       - name: Comment PR
         id: comment_pr
-        uses: htec-infra/gha-utils/utils/comment-pr@v0.1.0
+        uses: htec-infra/gha-utils/actions/comment-pr@v0.1.0
         with:
           github_token: "${{ inputs.github_token }}"
