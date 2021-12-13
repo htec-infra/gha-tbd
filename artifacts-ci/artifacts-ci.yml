@@ -4,7 +4,7 @@ name: 'Artifact CI'
 on:
   workflow_call:
     inputs:
-      token:
+      github_token:
         description: 'Github access token'
         required: true
       dockerfile:
@@ -29,6 +29,10 @@ jobs:
     name: 'Verify / Build / Test / Publish Docker image for applications packaged as docker artifact'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+          token:  ${{ secrets.github_token }}
       - name: Get repo data
         id: repo_data
         uses: htec-infra/gha-utils/utils/repo-data@v0.1.0
