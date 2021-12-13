@@ -35,7 +35,7 @@ jobs:
           token:  ${{ secrets.github_token }}
       - name: Get repo data
         id: repo_data
-        uses: htec-infra/gha-tbd/utils/repo-data@v0.6.0
+        uses: htec-infra/gha-utils/actions/repo-data@v0.1.0
       - name: Setup dotnet
         uses: actions/setup-dotnet@v1
         with:

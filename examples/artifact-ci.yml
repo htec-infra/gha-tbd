@@ -30,9 +30,9 @@ jobs:
           ref: ${{ env.APP_REVISION }}
       - name: Create Artifact
         id: artifact
-        uses: htec-infra/gha-tbd/artifacts-ci@main
+        uses: htec-infra/gha-tbd/workflows/artifacts-ci.yml@VERSION
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
           dockerfile: infra/Test.Dockerfile
           push_image: false
           registry_login: false
