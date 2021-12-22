@@ -14,7 +14,7 @@ on:
 jobs:
   sonarcloud:
     name: Code Quality check
-    uses: htec-infra/gha-tbd/workflows/sonarscan/dotnet.yml@VERSION
+    uses: htec-infra/gha-tbd/.github/workflows/sonarscan-dotnet.yml@VERSION
     with:
       build_dir: "src/"
     secrets:
