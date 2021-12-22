@@ -1,0 +1,22 @@
+name: Artifacts CI
+
+on:
+  # Triggers the workflow on push or pull request events but only for the main/master branch
+  push:
+    branches: [ main, master ]
+    paths:
+      - src/**
+      - infra/**
+  pull_request:
+    types: [ opened, synchronize, closed ]
+    branches: [ main, master ]
+
+jobs:
+  sonarcloud:
+    name: Code Quality check
+    uses: htec-infra/gha-tbd/workflows/sonarscan/dotnet.yml@VERSION
+    with:
+      build_dir: "src/"
+    secrets:
+      sonar_token: ${{ secrets.SONAR_TOKEN }}
+      token: ${{ secrets.GITHUB_TOKEN }}
