@@ -21,7 +21,7 @@ on:
 jobs:
   build_push:
     name: 'Build, publish and verify'
-    runs-on: "${{ inputs.runs_on }}"
+    runs-on: ${{ inputs.runs_on }}
     steps:
       - uses: actions/checkout@v2
         with:
