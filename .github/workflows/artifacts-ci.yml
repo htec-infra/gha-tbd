@@ -6,14 +6,13 @@ on:
       push_image:
         description: 'Whether to push image to container registry or not?'
         required: false
-        type: boolean
+        type: string
         default: 'false'
     secrets:
       gh_token:
         required: true
     outputs:
       app_version:
-        description: "Application Version"
         value: ${{ steps.repo_data.outputs.app_version }}
 
 jobs:
