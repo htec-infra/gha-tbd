@@ -11,9 +11,6 @@ on:
     secrets:
       gh_token:
         required: true
-    outputs:
-      app_version:
-        value: ${{ steps.repo_data.outputs.app_version }}
 
 jobs:
   build_push:
