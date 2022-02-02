@@ -1,5 +1,4 @@
 name: 'Artifact CI'
-description: 'Verify / Build / Test / Publish Docker image for applications packaged as docker artifact'
 
 on:
   workflow_call:
