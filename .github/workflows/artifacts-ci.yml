@@ -11,7 +11,7 @@ on:
     secrets:
       gh_token:
         required: true
-
+ 
 jobs:
   build_push:
     name: 'Build, publish and verify'
