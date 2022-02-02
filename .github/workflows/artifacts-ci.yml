@@ -4,21 +4,14 @@ description: 'Verify / Build / Test / Publish Docker image for applications pack
 on:
   workflow_call:
     inputs:
-      github_token:
-        description: 'Github access token'
-        required: true
-      dockerfile:
-        description: 'Dockerfile location'
-        required: true
-        default: 'infra/Dockerfile'
       push_image:
-        description: 'Whether to push image to Docker Registry or not?'
-        required: true
-        default: 'true'
-      registry_login:
-        description: 'Determine registry and try to login automatically (for ECR and self-hosted runners)'
+        description: 'Whether to push image to container registry or not?'
         required: false
+        type: boolean
         default: 'false'
+    secrets:
+      gh_token:
+        required: true
     outputs:
       app_version:
         description: "Application Version"
@@ -32,19 +25,17 @@ jobs:
       - uses: actions/checkout@v2
         with:
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
-          token:  ${{ inputs.github_token }}
+          token:  ${{ secrets.gh_token }}
       - name: Get repo data
         id: repo_data
-        uses: htec-infra/gha-utils/actions/repo-data@v0.1.0
+        uses: htec-infra/gha-utils/actions/repo-data@v0.2.0
       - name: Build and push container image
         id: container_ops
-        uses: htec-infra/gha-utils/actions/container-ops@v0.1.0
+        uses: htec-infra/gha-utils/actions/container-ops@v0.2.0
         with:
-          dockerfile: "${{ inputs.dockerfile }}"
           push_image: "${{ inputs.push_image }}"
-          registry_login: "${{ inputs.registry_login }}"
       - name: Comment PR
         id: comment_pr
-        uses: htec-infra/gha-utils/actions/comment-pr@v0.1.0
+        uses: htec-infra/gha-utils/actions/comment-pr@v0.2.0
         with:
-          github_token: "${{ inputs.github_token }}"
+          gh_token: "${{ inputs.gh_token }}"
