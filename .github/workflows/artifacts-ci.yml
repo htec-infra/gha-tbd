@@ -21,7 +21,7 @@ on:
 jobs:
   build_push:
     name: 'Build, publish and verify'
-    runs-on: [self-hosted, linux, x86_64]
+    runs-on: [self-hosted, linux]
     steps:
       - uses: actions/checkout@v2
         with:
