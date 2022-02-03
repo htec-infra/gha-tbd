@@ -12,6 +12,7 @@ on:
         description: "Change the platform on which runner will be working on "
         required: true
         type: string
+        default: ubuntu-latest
 
     secrets:
       gh_token:
@@ -20,7 +21,7 @@ on:
 jobs:
   build_push:
     name: 'Build, publish and verify'
-    runs-on: ${{ inputs.platform }}
+    runs-on: [self-hosted, linux, x86_64]
     steps:
       - uses: actions/checkout@v2
         with:
