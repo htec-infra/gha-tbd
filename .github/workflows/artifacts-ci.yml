@@ -8,11 +8,10 @@ on:
         required: false
         type: string
         default: 'false'
-      runs_on:
+      platform:
         description: "Change the platform on which runner will be working on "
-        required: false
+        required: true
         type: string
-        default: 'ubuntu-latest'
 
     secrets:
       gh_token:
@@ -21,7 +20,7 @@ on:
 jobs:
   build_push:
     name: 'Build, publish and verify'
-    runs-on: self-hosted
+    runs-on: ${{ inputs.platform }}
     steps:
       - uses: actions/checkout@v2
         with:
